@@ -8,7 +8,7 @@ const puerto = 3000;
 app.use(express.json());
 
 const usersRouter = require('./routes/users.js');
-app.use('/api/users', usersRouter)
+app.use('/api/usuarios', usersRouter)
 
 app.get("/", (request, response) => {
   response.send('Hola')

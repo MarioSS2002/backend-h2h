@@ -13,8 +13,20 @@ const getUsers = async () => {
   }
 }
 
+let congelados = [];
+
+const congelarUsuario = (id) => {
+  congelados.push(id);
+}
+
+const getUsuariosCongelados = () => {
+  return congelados;
+}
+
 module.exports = {
-  getUsers
+  getUsers,
+  congelarUsuario,
+  getUsuariosCongelados
 }
 
 

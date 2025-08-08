@@ -40,7 +40,33 @@ const getUsersFiltered = async (request, response) => {
   }
 };
 
+const congelarUsuario = (request, response) => {
+  try {
+    const { id } = request.body;
+    if (!id) {
+      return response.status(400).json({ error: 'ID is required' });
+    }
+    usersService.congelarUsuario(id);
+    response.status(200).json({ message: `User ${id} frozen` });
+  } catch (error) {
+    console.error("Error freezing user:", error);
+    response.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getUsuariosCongelados = (request, response) => {
+  try {
+    const frozenUsers = usersService.getUsuariosCongelados();
+    response.json(frozenUsers);
+  } catch (error) {
+    console.error("Error fetching frozen users:", error);
+    response.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getAllUsers,
-  getUsersFiltered 
+  getUsersFiltered,
+  congelarUsuario,
+  getUsuariosCongelados
 };
