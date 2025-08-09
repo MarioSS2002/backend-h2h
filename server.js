@@ -15,10 +15,6 @@ app.get("/", (request, response) => {
 })
 
 
-
-
-
-
 app.listen(puerto, () => {
   console.log(`servidor levantado en el puerto ${puerto}...`)
 })

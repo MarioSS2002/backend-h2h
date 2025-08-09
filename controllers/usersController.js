@@ -72,9 +72,39 @@ const getUsuariosCongelados = async (request, response) => {
   }
 };
 
+const separarUsuario = (request, response) => {
+  try {
+    const { id } = request.body;
+    if (!id) {
+      return response.status(400).json({ error: "ID is required" });
+    }
+    const idNumber = parseInt(id, 10);
+    if (isNaN(idNumber)) {
+      return response.status(400).json({ error: "ID must be a valid number" });
+    }
+    usersService.separarUsuario(idNumber); // Pasar el número validado
+    response.status(200).json({ message: `User ${idNumber} Separado` });
+  } catch (error) {
+    console.error("Error separating user:", error);
+    response.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getUsuariosSeparados = async (request, response) => {
+  try {
+    const separatedUsers = await usersService.getUsuariosSeparados();
+    response.json(separatedUsers);
+  } catch (error) {
+    console.error("Error fetching splitting users:", error);
+    response.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUsersFiltered,
   congelarUsuario,
   getUsuariosCongelados,
+  separarUsuario,
+  getUsuariosSeparados
 };

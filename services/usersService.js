@@ -38,6 +38,27 @@ const getUsuariosCongelados = async () => {
   }
 };
 
+let usuariosSeparados = [];
+
+const separarUsuario = (id) => {
+  if (!usuariosSeparados.includes(id)) {
+    usuariosSeparados.push(id);
+  }
+}
+
+const getUsuariosSeparados = async () => {
+  try{
+    const todosLosUsuariosSeparados = await getUsers();
+
+// Filtrar solo los usuarios cuyo ID está en la lista de separados
+    const usuariosFiltrados = todosLosUsuariosSeparados.filter(usuario => usuariosSeparados.includes(usuario.id));
+    return usuariosFiltrados;
+
+  }catch(error){
+    throw new Error(`Error al obtener usuarios separados: ${error.message}`);
+  }
+}
+
 /*
 const getIdsCongelados = () => {
   return [...congelados]; // Devuelve ids congelados
@@ -47,7 +68,9 @@ const getIdsCongelados = () => {
 module.exports = {
   getUsers,
   congelarUsuario,
-  getUsuariosCongelados
+  getUsuariosCongelados,
+  separarUsuario,
+  getUsuariosSeparados
 }
 
 
