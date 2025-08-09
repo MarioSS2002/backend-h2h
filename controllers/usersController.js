@@ -1,4 +1,5 @@
 const usersService = require("../services/usersService");
+const { AppError } = require("../utils/errorHandler");
 
 const getAllUsers = async (request, response) => {
   try {
@@ -10,7 +11,7 @@ const getAllUsers = async (request, response) => {
   }
 };
 
-const getUsersFiltered = async (request, response) => {
+const getUsersFiltered = async (request, response, next) => { // Agregar 'next'
   try {
     let users = await usersService.getUsers();
 
@@ -18,28 +19,32 @@ const getUsersFiltered = async (request, response) => {
     const city = request.query.city;
     const id = request.query.id;
 
+    const idNumber = id ? parseInt(id, 10) : null;
+
     if (email) {
-      users = users.filter(
-        (user) => user.email.toLowerCase() === email.toLowerCase()
+      users = users.filter(user => 
+        user.email && user.email.toLowerCase() === email.toLowerCase()
+      );
+    }
+    
+    if (city) {
+      users = users.filter(user => 
+        user.address && user.address.city &&
+        user.address.city.toLowerCase() === city.toLowerCase()
       );
     }
 
-    if (city) {
-      users = users.filter(
-        (user) => user.address.city.toLowerCase() === city.toLowerCase()
-      );
-    }
-    if (id !== undefined && id !== null && id !== "") {
-      const idNumber = parseInt(id, 10);
-      if (!isNaN(idNumber)) {
-        users = users.filter((user) => user.id === idNumber);
+    if(idNumber && !isNaN(idNumber)) {
+      const userFound = users.find(user => user.id === idNumber);
+      if (!userFound) {
+        return next(new AppError('User not found with that ID', 404)); // Usar AppError
       }
+      users = [userFound]; // Devolver solo el usuario encontrado
     }
 
     response.json(users);
   } catch (error) {
-    console.error("Error fetching filtered users:", error);
-    response.status(500).json({ error: "Internal Server Error" });
+    next(error); // Pasar el error al manejador global
   }
 };
 
@@ -108,3 +113,5 @@ module.exports = {
   separarUsuario,
   getUsuariosSeparados
 };
+
+
