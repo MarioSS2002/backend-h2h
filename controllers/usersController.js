@@ -84,7 +84,7 @@ const separarUsuario = (request, response) => {
       return response.status(400).json({ error: "ID is required" });
     }
     const idNumber = parseInt(id, 10);
-    if (isNaN(idNumber)) {
+    if (isNaN(idNumber)) { 
       return response.status(400).json({ error: "ID must be a valid number" });
     }
     usersService.separarUsuario(idNumber); // Pasar el número validado
